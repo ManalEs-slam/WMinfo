@@ -9,6 +9,9 @@ use App\Models\Category;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ArticleController extends Controller
 {
@@ -127,11 +130,42 @@ class ArticleController extends Controller
         $data['tags'] = $this->normalizeTags($data['tags'] ?? null);
 
         if ($request->hasFile('featured_image')) {
+            Log::info('Image processing started.');
+
             if ($article?->featured_image) {
                 Storage::disk('public')->delete($article->featured_image);
+                Log::info('Old image deleted: ' . $article->featured_image);
             }
 
-            $data['featured_image'] = $request->file('featured_image')->store('articles', 'public');
+            $file = $request->file('featured_image');
+            $originalSize = $file->getSize();
+            Log::info('Original image size: ' . $originalSize . ' bytes');
+
+            $path = 'articles/' . $file->hashName();
+
+            // Create an image manager instance
+            $manager = new ImageManager(new Driver());
+
+            // Read the image from the uploaded file
+            $image = $manager->read($file);
+            Log::info('Original image dimensions: ' . $image->width() . 'x' . $image->height());
+
+            // Resize the image to a max width of 800px and constrain aspect ratio
+            $image->scale(width: 800);
+            Log::info('Resized image dimensions: ' . $image->width() . 'x' . $image->height());
+
+            // Encode the image to JPEG format with 80% quality
+            $encoded = $image->toJpeg(80);
+            $processedSize = strlen((string) $encoded);
+            Log::info('Processed image size: ' . $processedSize . ' bytes');
+
+            // Store the processed image
+            Storage::disk('public')->put($path, (string) $encoded);
+            Log::info('Image stored at: ' . $path);
+
+            $data['featured_image'] = $path;
+        } else {
+            Log::info('No featured image uploaded.');
         }
 
         if ($data['status'] === 'published' && empty($data['published_at'])) {

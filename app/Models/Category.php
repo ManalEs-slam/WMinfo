@@ -34,4 +34,22 @@ class Category extends Model
     {
         return $this->hasMany(Article::class);
     }
+
+    public function getNameTranslatedAttribute()
+    {
+        if (app()->getLocale() !== 'ar') {
+            return $this->name;
+        }
+
+        $translations = [
+            'technologie' => 'تكنولوجيا',
+            'sport' => 'رياضة',
+            'politique' => 'سياسة',
+            'international' => 'دولي',
+            'economie' => 'اقتصاد',
+            'culture' => 'ثقافة',
+        ];
+
+        return $translations[strtolower($this->slug ?? '')] ?? $this->name;
+    }
 }

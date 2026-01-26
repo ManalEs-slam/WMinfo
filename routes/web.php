@@ -12,7 +12,10 @@ use App\Http\Controllers\Frontend\ArticleController as PublicArticleController;
 use App\Http\Controllers\Frontend\AuthController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\VideoController;
+use App\Http\Controllers\LanguageController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('lang/{locale}', [LanguageController::class, 'setLocale'])->name('lang.switch');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/search', [HomeController::class, 'search'])->name('search');

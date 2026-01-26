@@ -13,14 +13,18 @@ class HomeController extends Controller
     public function index()
     {
         $categories = Category::where('is_active', true)->orderBy('name')->get();
-        $latestArticles = Article::published()
-            ->with(['author', 'category'])
-            ->latest('published_at')
-            ->take(6)
-            ->get();
+        $publicPublishedQuery = Article::query()
+            ->where('status', 'published')
+            ->where('visibility', 'public')
+            ->with(['author', 'category']);
 
-        $featuredArticle = Article::published()
-            ->with(['author', 'category'])
+        $latestArticles = $publicPublishedQuery
+            ->orderByDesc('published_at')
+            ->orderByDesc('created_at')
+            ->paginate(9)
+            ->withQueryString();
+
+        $featuredArticle = (clone $publicPublishedQuery)
             ->orderByDesc('views')
             ->first();
 
