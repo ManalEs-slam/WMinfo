@@ -1,0 +1,4 @@
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home2/wminfoma/public_html/News
+    - /bin/cp -R * $DEPLOYPATH
