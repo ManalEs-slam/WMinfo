@@ -13,10 +13,10 @@
             <div class="col-md-6 col-lg-4">
                 <div class="article-card h-100">
                     <div class="ratio ratio-16x9">
-                        <iframe src="{{ $video->video_url }}" title="{{ $video->title }}" allowfullscreen></iframe>
+                        <iframe src="{{ $video->video_url }}" title="{{ app()->getLocale() === 'ar' ? ($video->title_ar ?: $video->title_fr ?: $video->title) : ($video->title_fr ?: $video->title) }}" allowfullscreen></iframe>
                     </div>
                     <div class="p-3">
-                        <h5>{{ $video->title }}</h5>
+                        <h5>{{ app()->getLocale() === 'ar' ? ($video->title_ar ?: $video->title_fr ?: $video->title) : ($video->title_fr ?: $video->title) }}</h5>
                         <p class="text-muted small">{{ $video->description }}</p>
                     </div>
                 </div>

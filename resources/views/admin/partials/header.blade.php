@@ -4,6 +4,10 @@
         <div class="text-muted small">Pilotage rapide de NewsPortal</div>
     </div>
     <div class="d-flex align-items-center gap-3">
+        <a href="{{ url('/') }}" target="_blank" rel="noreferrer" class="btn btn-outline-dark btn-sm">
+            <i class="fa fa-external-link-alt me-1" aria-hidden="true"></i>
+            Voir le site
+        </a>
         <div class="dropdown">
             <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 {{ strtoupper(app()->getLocale()) }}

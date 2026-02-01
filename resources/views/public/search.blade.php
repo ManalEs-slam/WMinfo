@@ -18,7 +18,7 @@
         @forelse ($articles as $article)
             <div class="col-md-6 col-lg-4">
                 <div class="article-card h-100">
-                    <img src="{{ $article->featured_image ? asset('storage/' . $article->featured_image) : 'https://images.unsplash.com/photo-1495020689067-958852a7765e?q=80&w=1200&auto=format&fit=crop' }}" alt="article">
+                    <img src="{{ $article->image_path ? asset($article->image_path) : 'https://images.unsplash.com/photo-1495020689067-958852a7765e?q=80&w=1200&auto=format&fit=crop' }}" alt="article">
                     <div class="p-3">
                         <div class="text-muted small">{{ $article->category?->name ?? 'General' }}</div>
                         <h5 class="mt-2">{{ $article->title }}</h5>

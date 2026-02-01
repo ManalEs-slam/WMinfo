@@ -14,9 +14,9 @@
                         {{ $article->published_at?->format('d/m/Y') ?? 'Draft' }}
                     </p>
 
-                    @if ($article->featured_image)
+                    @if ($article->image_path)
                         <figure class="article-featured-image">
-                            <img src="{{ Illuminate\Support\Facades\Storage::url($article->featured_image) }}" alt="{{ $article->title }}">
+                            <img src="{{ asset($article->image_path) }}" alt="{{ $article->title }}">
                         </figure>
                     @endif
 

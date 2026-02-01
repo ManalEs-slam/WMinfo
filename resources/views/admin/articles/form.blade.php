@@ -29,11 +29,11 @@
                 <div class="stat-card p-4">
                     <h6>Image a la une</h6>
                     <div class="border border-dashed rounded-3 p-4 text-center mb-3">
-                        <input type="file" name="featured_image" class="form-control">
+                        <input type="file" name="image" class="form-control">
                         <div class="text-muted small mt-2">Glisser deposer ou selectionner un fichier.</div>
                     </div>
-                    @if ($article->featured_image)
-                        <img src="{{ asset('storage/' . $article->featured_image) }}" alt="featured" class="img-fluid rounded-3">
+                    @if ($article->image_path)
+                        <img src="{{ asset($article->image_path) }}" alt="featured" class="img-fluid rounded-3">
                     @endif
                 </div>
             </div>

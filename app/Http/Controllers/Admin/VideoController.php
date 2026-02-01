@@ -60,6 +60,8 @@ class VideoController extends Controller
     {
         $data = $request->validated();
         $data['slug'] = $video?->slug ?? $this->uniqueSlug($data['title']);
+        $data['title_fr'] = $data['title_fr'] ?? $data['title'] ?? null;
+        $data['title_ar'] = $data['title_ar'] ?? null;
 
         if ($request->hasFile('thumbnail')) {
             if ($video?->thumbnail) {

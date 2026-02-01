@@ -13,7 +13,13 @@
         <div class="row g-4">
             <div class="col-lg-8">
                 <div class="stat-card p-4 mb-4">
-                    <label class="form-label">Titre</label>
+                    <label class="form-label">Titre (FR)</label>
+                    <input type="text" name="title_fr" class="form-control mb-3" value="{{ old('title_fr', $video->title_fr ?? $video->title) }}">
+
+                    <label class="form-label">Titre (AR)</label>
+                    <input type="text" name="title_ar" class="form-control mb-3" value="{{ old('title_ar', $video->title_ar) }}">
+
+                    <label class="form-label">Titre (slug)</label>
                     <input type="text" name="title" class="form-control mb-3" value="{{ old('title', $video->title) }}" required>
 
                     <label class="form-label">Slug</label>

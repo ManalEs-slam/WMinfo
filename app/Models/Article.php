@@ -21,6 +21,7 @@ class Article extends Model
         'visibility',
         'tags',
         'featured_image',
+        'image_path',
         'published_at',
         'views',
     ];

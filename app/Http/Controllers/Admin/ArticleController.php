@@ -7,7 +7,7 @@ use App\Http\Requests\ArticleRequest;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\User;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManager;
@@ -86,8 +86,11 @@ class ArticleController extends Controller
     {
         $this->authorize('delete', $article);
 
-        if ($article->featured_image) {
-            Storage::disk('public')->delete($article->featured_image);
+        if ($article->image_path) {
+            $fullPath = public_path($article->image_path);
+            if (File::exists($fullPath)) {
+                File::delete($fullPath);
+            }
         }
 
         $article->delete();
@@ -129,19 +132,25 @@ class ArticleController extends Controller
         $data['slug'] = $article?->slug ?? $this->uniqueSlug($data['title']);
         $data['tags'] = $this->normalizeTags($data['tags'] ?? null);
 
-        if ($request->hasFile('featured_image')) {
+        if ($request->hasFile('image')) {
             Log::info('Image processing started.');
 
-            if ($article?->featured_image) {
-                Storage::disk('public')->delete($article->featured_image);
-                Log::info('Old image deleted: ' . $article->featured_image);
+            if ($article?->image_path) {
+                $oldPath = public_path($article->image_path);
+                if (File::exists($oldPath)) {
+                    File::delete($oldPath);
+                    Log::info('Old image deleted: ' . $article->image_path);
+                }
             }
 
-            $file = $request->file('featured_image');
+            $file = $request->file('image');
             $originalSize = $file->getSize();
             Log::info('Original image size: ' . $originalSize . ' bytes');
 
-            $path = 'articles/' . $file->hashName();
+            $fileName = time() . '_' . Str::random(10) . '.jpg';
+            $relativePath = 'uploads/articles/' . $fileName;
+            $absolutePath = public_path($relativePath);
+            File::ensureDirectoryExists(dirname($absolutePath));
 
             // Create an image manager instance
             $manager = new ImageManager(new Driver());
@@ -160,10 +169,10 @@ class ArticleController extends Controller
             Log::info('Processed image size: ' . $processedSize . ' bytes');
 
             // Store the processed image
-            Storage::disk('public')->put($path, (string) $encoded);
-            Log::info('Image stored at: ' . $path);
+            File::put($absolutePath, (string) $encoded);
+            Log::info('Image stored at: ' . $relativePath);
 
-            $data['featured_image'] = $path;
+            $data['image_path'] = $relativePath;
         } else {
             Log::info('No featured image uploaded.');
         }

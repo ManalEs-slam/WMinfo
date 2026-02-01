@@ -47,7 +47,7 @@
             @foreach ($latestArticles as $article)
                 <div class="col-md-6 col-lg-4">
                     <div class="article-card h-100">
-                        <img src="{{ $article->featured_image ? Illuminate\Support\Facades\Storage::url($article->featured_image) : 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1200&auto=format&fit=crop' }}" alt="article">
+                        <img src="{{ $article->image_path ? asset($article->image_path) : 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1200&auto=format&fit=crop' }}" alt="article">
                         <div class="p-3">
                             <div class="text-muted small">{{ $article->category?->name ?? 'General' }}</div>
                             <h5 class="mt-2">{{ $article->title }}</h5>
@@ -68,6 +68,34 @@
         </div>
     </section>
 
+    <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3>صوت و صورة</h3>
+            <a href="{{ route('videos.index') }}" class="text-decoration-none">Vidéos</a>
+        </div>
+        <div class="row g-4 video-grid">
+            @foreach ($videos as $video)
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <button type="button" class="video-card" data-video-url="{{ $video->video_url }}">
+                        <div class="video-card__media">
+                            <img src="{{ $video->thumbnail ? asset('storage/' . $video->thumbnail) : 'https://images.unsplash.com/photo-1512428559087-560fa5ceab42?q=80&w=1200&auto=format&fit=crop' }}" alt="{{ $video->title }}">
+                            <span class="video-card__overlay"></span>
+                            <span class="video-card__play">
+                                <i class="fa fa-play" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        <div class="video-card__body">
+                            <div class="video-card__title">
+                                {{ app()->getLocale() === 'ar' ? ($video->title_ar ?: $video->title_fr ?: $video->title) : ($video->title_fr ?: $video->title) }}
+                            </div>
+                            <div class="text-muted small">{{ optional($video->published_at)->format('d/m/Y') }}</div>
+                        </div>
+                    </button>
+                </div>
+            @endforeach
+        </div>
+    </section>
+
     <section class="hero-card newsletter-card">
         <div class="row align-items-center g-4">
             <div class="col-lg-7">
@@ -83,4 +111,42 @@
             </div>
         </div>
     </section>
+
+    <div class="video-modal" data-video-modal aria-hidden="true">
+        <div class="video-modal__backdrop" data-video-close></div>
+        <div class="video-modal__panel" role="dialog" aria-modal="true">
+            <button class="video-modal__close" type="button" data-video-close aria-label="Fermer">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+            <div class="video-modal__frame">
+                <iframe src="" title="Video player" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
 @endsection
+
+@push('scripts')
+    <script>
+        const videoModal = document.querySelector('[data-video-modal]');
+        const modalFrame = videoModal?.querySelector('iframe');
+
+        document.querySelectorAll('.video-card').forEach(card => {
+            card.addEventListener('click', () => {
+                if (!videoModal || !modalFrame) return;
+                modalFrame.src = card.dataset.videoUrl || '';
+                videoModal.classList.add('is-open');
+                videoModal.setAttribute('aria-hidden', 'false');
+            });
+        });
+
+        videoModal?.querySelectorAll('[data-video-close]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                videoModal.classList.remove('is-open');
+                videoModal.setAttribute('aria-hidden', 'true');
+                if (modalFrame) {
+                    modalFrame.src = '';
+                }
+            });
+        });
+    </script>
+@endpush

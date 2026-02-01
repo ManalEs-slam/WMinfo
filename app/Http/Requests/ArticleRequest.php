@@ -23,7 +23,7 @@ class ArticleRequest extends FormRequest
             'visibility' => ['required', 'in:public,private,unlisted'],
             'tags' => ['nullable', 'string', 'max:255'],
             'published_at' => ['nullable', 'date'],
-            'featured_image' => ['nullable', 'image', 'max:2048'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ];
     }
 }
