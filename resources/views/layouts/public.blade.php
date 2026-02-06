@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', __('messages.app_name'))</title>
+    @stack('meta')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Source+Sans+3:wght@300;400;500;600&family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet">
@@ -79,7 +80,7 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-3">
                     <h6 class="text-uppercase">{{ __('messages.contact') }}</h6>
-                    <p class="text-secondary mb-1">contact@newsportal.test</p>
+                    <p class="text-secondary mb-1">contact@wminfo.ma</p>
                     <p class="text-secondary">{{ __('messages.footer_location') }}</p>
                 </div>
             </div>

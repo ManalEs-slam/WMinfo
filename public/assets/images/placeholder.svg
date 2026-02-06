@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="Placeholder">
+  <rect width="1200" height="675" fill="#f1f3f5"/>
+  <rect x="60" y="60" width="1080" height="555" fill="#e5e7eb"/>
+  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="#9ca3af" font-size="32" font-family="Arial, sans-serif">
+    WMinfo
+  </text>
+</svg>

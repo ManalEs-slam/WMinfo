@@ -13,7 +13,28 @@
             <div class="col-md-6 col-lg-4">
                 <div class="article-card h-100">
                     <div class="ratio ratio-16x9">
-                        <iframe src="{{ $video->video_url }}" title="{{ app()->getLocale() === 'ar' ? ($video->title_ar ?: $video->title_fr ?: $video->title) : ($video->title_fr ?: $video->title) }}" allowfullscreen></iframe>
+                        @if ($video->video_url)
+                            @php
+                                $embedUrl = $video->video_url;
+                                if (!str_contains($embedUrl, 'youtube.com/embed/') && !str_contains($embedUrl, 'youtu.be/')) {
+                                    preg_match('/[?&]v=([A-Za-z0-9_-]+)/', $embedUrl, $matches);
+                                    $embedUrl = $matches[1] ?? '';
+                                    $embedUrl = $embedUrl ? 'https://www.youtube.com/embed/' . $embedUrl : '';
+                                }
+                                if (str_contains($embedUrl, 'youtu.be/')) {
+                                    $parts = explode('youtu.be/', $embedUrl);
+                                    $embedUrl = isset($parts[1]) ? 'https://www.youtube.com/embed/' . $parts[1] : '';
+                                }
+                            @endphp
+                            @if ($embedUrl)
+                                <iframe src="{{ $embedUrl }}" title="{{ app()->getLocale() === 'ar' ? ($video->title_ar ?: $video->title_fr ?: $video->title) : ($video->title_fr ?: $video->title) }}" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+                            @endif
+                        @elseif ($video->video_file)
+                            <video controls preload="metadata">
+                                <source src="{{ asset('storage/' . $video->video_file) }}" type="video/mp4">
+                                Votre navigateur ne prend pas en charge la video.
+                            </video>
+                        @endif
                     </div>
                     <div class="p-3">
                         <h5>{{ app()->getLocale() === 'ar' ? ($video->title_ar ?: $video->title_fr ?: $video->title) : ($video->title_fr ?: $video->title) }}</h5>

@@ -27,6 +27,15 @@
 
                     <label class="form-label">URL video (embed)</label>
                     <input type="text" name="video_url" class="form-control mb-3" value="{{ old('video_url', $video->video_url) }}" placeholder="https://www.youtube.com/embed/...">
+                    <div class="text-muted small mb-3">Choisir soit une URL YouTube, soit un fichier vidéo.</div>
+
+                    <label class="form-label">Fichier video (MP4/WebM/OGG)</label>
+                    <input type="file" name="video_file" class="form-control mb-3" accept="video/mp4,video/webm,video/ogg">
+                    @if ($video->video_file)
+                        <video class="w-100 rounded-3 mb-3" controls preload="metadata">
+                            <source src="{{ asset('storage/' . $video->video_file) }}" type="video/mp4">
+                        </video>
+                    @endif
 
                     <label class="form-label">Description</label>
                     <textarea name="description" class="form-control" rows="4">{{ old('description', $video->description) }}</textarea>

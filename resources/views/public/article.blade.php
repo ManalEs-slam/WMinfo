@@ -2,6 +2,41 @@
 
 @section('title', $article->title . ' - ' . __('messages.app_name'))
 
+@push('meta')
+    @php
+        $rawImage = $article->image_path ?? $article->featured_image ?? null;
+        $rawImage = $rawImage ? ltrim($rawImage, '/') : null;
+        $fallbackImage = asset('assets/images/placeholder.svg');
+        $imageUrl = $fallbackImage;
+        if ($rawImage) {
+            if (\Illuminate\Support\Str::startsWith($rawImage, 'uploads/')) {
+                $imageUrl = asset($rawImage);
+            } elseif (\Illuminate\Support\Str::startsWith($rawImage, 'storage/')) {
+                $imageUrl = asset($rawImage);
+            } elseif (file_exists(public_path('uploads/articles/' . $rawImage))) {
+                $imageUrl = asset('uploads/articles/' . $rawImage);
+            } else {
+                $imageUrl = asset('storage/' . $rawImage);
+            }
+        }
+        $descriptionSource = $article->excerpt ?: strip_tags($article->content ?? '');
+        $description = \Illuminate\Support\Str::limit(trim($descriptionSource), 160, '...');
+        $currentUrl = url()->current();
+    @endphp
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{ $article->title }}">
+    <meta property="og:description" content="{{ $description }}">
+    <meta property="og:url" content="{{ $currentUrl }}">
+    <meta property="og:image" content="{{ $imageUrl }}">
+    <meta property="og:image:secure_url" content="{{ $imageUrl }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $article->title }}">
+    <meta name="twitter:description" content="{{ $description }}">
+    <meta name="twitter:image" content="{{ $imageUrl }}">
+@endpush
+
 @section('content')
     <div class="article-page">
         <div class="article-container">
@@ -14,11 +49,26 @@
                         {{ $article->published_at?->format('d/m/Y') ?? 'Draft' }}
                     </p>
 
-                    @if ($article->image_path)
-                        <figure class="article-featured-image">
-                            <img src="{{ asset($article->image_path) }}" alt="{{ $article->title }}">
-                        </figure>
-                    @endif
+                    @php
+                        $img = $article->image_path ?? $article->featured_image ?? null;
+                        $img = $img ? ltrim($img, '/') : null;
+                        $placeholder = asset('assets/images/placeholder.svg');
+                        $src = $placeholder;
+                        if ($img) {
+                            if (\Illuminate\Support\Str::startsWith($img, 'uploads/')) {
+                                $src = asset($img);
+                            } elseif (\Illuminate\Support\Str::startsWith($img, 'storage/')) {
+                                $src = asset($img);
+                            } elseif (file_exists(public_path('uploads/articles/' . $img))) {
+                                $src = asset('uploads/articles/' . $img);
+                            } else {
+                                $src = asset('storage/' . $img);
+                            }
+                        }
+                    @endphp
+                    <figure class="article-featured-image">
+                        <img src="{{ $src }}" alt="{{ $article->title }}" onerror="this.onerror=null;this.src='{{ $placeholder }}';">
+                    </figure>
 
                     <div class="article-body mb-4">{!! $article->content !!}</div>
 

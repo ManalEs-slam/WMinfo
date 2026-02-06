@@ -25,6 +25,23 @@ class HomeController extends Controller
             ->paginate(9)
             ->withQueryString();
 
+        $latestForSlider = (clone $publicPublishedQuery)
+            ->orderByDesc('published_at')
+            ->orderByDesc('created_at')
+            ->take(10)
+            ->get();
+
+        $trendingArticles = (clone $publicPublishedQuery)
+            ->orderByDesc('views')
+            ->take(10)
+            ->get();
+
+        $sliderArticles = $trendingArticles
+            ->merge($latestForSlider)
+            ->unique('id')
+            ->take(10)
+            ->values();
+
         $featuredArticle = (clone $publicPublishedQuery)
             ->orderByDesc('views')
             ->first();
@@ -35,7 +52,7 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
-        return view('public.home', compact('categories', 'latestArticles', 'featuredArticle', 'videos'));
+        return view('public.home', compact('categories', 'latestArticles', 'featuredArticle', 'videos', 'sliderArticles'));
     }
 
     public function search()

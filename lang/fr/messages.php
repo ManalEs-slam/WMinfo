@@ -81,7 +81,7 @@ return [
     'footer_sport' => 'Sport',
     'footer_contact' => 'Contact',
     'footer_about' => 'À propos',
-    'footer_location' => 'Paris, France',
+    'footer_location' => 'Maroc, Settat - Casablanca',
     'footer_rights' => 'Tous droits réservés.',
     'footer_logo_alt' => 'Logo arabe',
 ];

@@ -81,7 +81,7 @@ return [
     'footer_sport' => 'الرياضة',
     'footer_contact' => 'اتصل بنا',
     'footer_about' => 'من نحن',
-    'footer_location' => 'باريس، فرنسا',
+    'footer_location' => 'المغرب، سطات - الدار البيضاء',
     'footer_rights' => 'جميع الحقوق محفوظة.',
     'footer_logo_alt' => 'شعار عربي',
 ];

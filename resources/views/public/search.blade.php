@@ -18,7 +18,24 @@
         @forelse ($articles as $article)
             <div class="col-md-6 col-lg-4">
                 <div class="article-card h-100">
-                    <img src="{{ $article->image_path ? asset($article->image_path) : 'https://images.unsplash.com/photo-1495020689067-958852a7765e?q=80&w=1200&auto=format&fit=crop' }}" alt="article">
+                    @php
+                        $img = $article->image_path ?? $article->featured_image ?? null;
+                        $img = $img ? ltrim($img, '/') : null;
+                        $placeholder = asset('assets/images/placeholder.svg');
+                        $src = $placeholder;
+                        if ($img) {
+                            if (\Illuminate\Support\Str::startsWith($img, 'uploads/')) {
+                                $src = asset($img);
+                            } elseif (\Illuminate\Support\Str::startsWith($img, 'storage/')) {
+                                $src = asset($img);
+                            } elseif (file_exists(public_path('uploads/articles/' . $img))) {
+                                $src = asset('uploads/articles/' . $img);
+                            } else {
+                                $src = asset('storage/' . $img);
+                            }
+                        }
+                    @endphp
+                    <img src="{{ $src }}" alt="article" onerror="this.onerror=null;this.src='{{ $placeholder }}';">
                     <div class="p-3">
                         <div class="text-muted small">{{ $article->category?->name ?? 'General' }}</div>
                         <h5 class="mt-2">{{ $article->title }}</h5>

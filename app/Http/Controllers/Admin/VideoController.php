@@ -50,6 +50,9 @@ class VideoController extends Controller
         if ($video->thumbnail) {
             Storage::disk('public')->delete($video->thumbnail);
         }
+        if ($video->video_file) {
+            Storage::disk('public')->delete($video->video_file);
+        }
 
         $video->delete();
 
@@ -62,6 +65,24 @@ class VideoController extends Controller
         $data['slug'] = $video?->slug ?? $this->uniqueSlug($data['title']);
         $data['title_fr'] = $data['title_fr'] ?? $data['title'] ?? null;
         $data['title_ar'] = $data['title_ar'] ?? null;
+
+        if (!empty($data['video_url'])) {
+            if ($video?->video_file) {
+                Storage::disk('public')->delete($video->video_file);
+            }
+            $data['video_file'] = null;
+        }
+
+        if ($request->hasFile('video_file')) {
+            if ($video?->video_file) {
+                Storage::disk('public')->delete($video->video_file);
+            }
+
+            $file = $request->file('video_file');
+            $fileName = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+            $data['video_file'] = $file->storeAs('videos', $fileName, 'public');
+            $data['video_url'] = null;
+        }
 
         if ($request->hasFile('thumbnail')) {
             if ($video?->thumbnail) {

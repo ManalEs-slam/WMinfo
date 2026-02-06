@@ -11,21 +11,6 @@
             @include('partials.logo_path', ['logoClass' => 'brand-logo', 'logoAlt' => 'WNانفو'])
         </a>
         <div class="header-actions">
-            <div class="header-auth">
-                @guest
-                    <a href="{{ route('login') }}" class="btn btn-outline-dark btn-sm">Se connecter</a>
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="btn btn-dark btn-sm">S'inscrire</a>
-                    @endif
-                @endguest
-                @auth
-                    <span class="header-auth__user">{{ auth()->user()->display_name ?? auth()->user()->email }}</span>
-                    <form method="post" action="{{ route('logout') }}" class="d-inline">
-                        @csrf
-                        <button class="btn btn-outline-dark btn-sm" type="submit">Se déconnecter</button>
-                    </form>
-                @endauth
-            </div>
             <div class="header-social" aria-label="{{ __('messages.follow_us') }}">
                 <a href="https://www.facebook.com" target="_blank" rel="noreferrer" aria-label="{{ __('messages.social_facebook') }}">
                     <i class="fab fa-facebook-f" aria-hidden="true"></i>
